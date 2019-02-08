@@ -2,6 +2,23 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 Please use **one** of the two installation options, either native **or** docker installation.
 
+
+### Team LateStarter members
+|member   |e-mail address   |
+|---|---|
+|Taira Okabe   | taira.o2580@gmail.com  |
+|Salih Igde    | salihigde@gmail.com    |
+
+### Traffic light classifier
+ Our traffic light classification is 2 steps. First, using geometric data of traffic light and pinhole camera model, we crop the traffic light from `/image_cb`. The example is below. 
+
+![Cropped image example](imgs/tl_image_example.jpg)
+
+Second we use CNN(the model is below) so that we can classify the color.
+
+![traffic light classification model](imgs/model.png)
+
+
 ### Native Installation
 
 * Be sure that your workstation is running Ubuntu 16.04 Xenial Xerus or Ubuntu 14.04 Trusty Tahir. [Ubuntu downloads can be found here](https://www.ubuntu.com/download/desktop).
