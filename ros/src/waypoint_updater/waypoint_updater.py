@@ -4,8 +4,8 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
-from std_msgs.msg import Int32
 from scipy.spatial import KDTree
+from std_msgs.msg import Int32
 
 import math
 
@@ -24,7 +24,7 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 200 # Number of waypoints we will publish. You can change this number
+LOOKAHEAD_WPS = 90 # Number of waypoints we will publish. You can change this number
 MAX_DECEL = .5
 
 class WaypointUpdater(object):
@@ -33,8 +33,9 @@ class WaypointUpdater(object):
 
         rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
+
         rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb)
-ffic
+
         # TODO: Add a subscriber for /traffic_waypoint and /obstacle_waypoint below
 
 
@@ -50,13 +51,12 @@ ffic
         self.loop()
 
     def loop(self):
-	rate = rospy.Rate(10);
+	rate = rospy.Rate(50);
 	while not rospy.is_shutdown():
-	    if self.pose and self.base_lane:
-		self.publish_waypoints()
-                # closest_waypoint_idx = self.get_closest_waypoint_id()
-		# self.publish_waypoints(closest_waypoint_idx)
-	    rate.sleep()
+		if self.pose and self.base_lane:
+			closest_waypoint_idx = self.get_closest_waypoint_id()
+			self.publish_waypoints(closest_waypoint_idx)
+		rate.sleep()
 
     def get_closest_waypoint_id(self):
 	x = self.pose.pose.position.x
@@ -77,19 +77,14 @@ ffic
 	   closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
 
 	return closest_idx
-    '''
+
     def publish_waypoints(self, closest_idx):
 	final_lane = self.generate_lane()
 	self.final_waypoints_pub.publish(final_lane)
-    '''
-    def publish_waypoints(self):
-	final_lane = self.generate_lane()
-	self.final_waypoints_pub.publish(final_lane)
 
-    
     def generate_lane(self):
 	lane = Lane()
-
+	
 	closest_idx = self.get_closest_waypoint_id()
 	farthest_idx = closest_idx + LOOKAHEAD_WPS
 	base_waypoints = self.base_lane.waypoints[closest_idx:farthest_idx]
